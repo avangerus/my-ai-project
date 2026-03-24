@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-job:
-    runs-on: [PROTON]
+    runs-on: self-hosted
     defaults:
       run:
         shell: powershell
