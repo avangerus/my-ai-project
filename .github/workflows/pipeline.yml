@@ -43,7 +43,7 @@ jobs:
           if ($env:OPENROUTER_KEY) {
             Write-Host "✨ Generating optimized prompt via OpenRouter..."
             $body = @{
-              model = "meta-llama/llama-3-70b-instruct"
+              model = "qwen/qwen3.5-flash-02-23"
               messages = @(
                 @{ role = "system"; content = "Create a concise technical prompt for Codex CLI. Output ONLY the prompt." },
                 @{ role = "user"; content = "Task: $draft" }
