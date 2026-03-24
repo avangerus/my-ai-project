@@ -1,4 +1,4 @@
-﻿name: AI Dev Pipeline - TEST MODE
+﻿name: AI Dev Pipeline
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  simple-test:
+  test-job:
     runs-on: [self-hosted, windows, ai]
     defaults:
       run:
@@ -15,49 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 🚀 Say Hello
+      - name: Say Hello
         run: |
           Write-Host "✅ Runner working on: $env:COMPUTERNAME"
-          Write-Host "📁 In folder: $(Get-Location)"
-          Write-Host "🔧 PowerShell version: $PSVersionTable.PSVersion"
+          Write-Host "📁 Working directory: $(Get-Location)"
 
-      - name: 📝 Create Test File
+      - name: Create Test File
         run: |
-          # Создаём папку если нет
           New-Item -Path src -ItemType Directory -Force | Out-Null
-          
-          # Пишем файл с результатом
-          $content = @"
-# AI Pipeline Test Result ✅
-
-Generated at: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
-Runner: $env:COMPUTERNAME
-Draft: $env:GITHUB_TRIGGERING_ACTOR
-
-## Что произошло:
-1. Ты создал драфт в drafts/
-2. Git push отправил его на GitHub
-3. Раннер подхватил задачу
-4. Этот файл создан автоматически!
-
-## Следующий шаг:
-- Открой этот файл
-- Посмотри, что всё работает
-- Создай свой первый реальный драфт
-"@
-          $content | Out-File src/hello-ai.txt -Encoding utf8
+          "Pipeline works! Generated at $(Get-Date)" | Out-File src/hello-ai.txt -Encoding utf8
           Write-Host "✅ Created src/hello-ai.txt"
 
-      - name: 💾 Commit Result
+      - name: Commit Result
         run: |
           git config --local user.email "pipeline@local"
           git config --local user.name "AI Pipeline"
-          
           git add src/hello-ai.txt
-          if (git diff --cached --name-only) {
-            git commit -m "🤖 Test: generated hello-ai.txt"
+          $changes = git diff --cached --name-only
+          if ($changes) {
+            git commit -m "AI: generated hello-ai.txt"
             git push
-            Write-Host "✅ Committed and pushed"
           } else {
-            Write-Host "⚠️ Nothing to commit"
+            Write-Host "No changes to commit"
           }
